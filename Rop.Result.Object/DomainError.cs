@@ -3,5 +3,6 @@
 public enum DomainError
 {
     None,
-    NullValue
+    NullValue,
+    Fail
 }

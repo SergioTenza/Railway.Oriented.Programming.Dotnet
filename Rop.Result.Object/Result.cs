@@ -3,6 +3,7 @@
 public class Result<T>
 {
     private T? _content;
+    public T Data => _content;
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
     public Error[] Errors { get; }
@@ -37,22 +38,4 @@ public class Result<T>
     public static implicit operator Result<T>(Error error) => new(error);
 
     public static implicit operator Result<T>(Error[] errors) => new(errors);
-
-    public Result<TResult> Match<TResult>(
-        Func<T, TResult> success,
-        Func<T, TResult> failure) =>
-        !IsFailure ? success(_content!) : failure(Errors!);
-    public static Result<TValue> Combine<TValue>(params Result<TValue>[] results)
-    {
-        if (results.Any(r => r.IsFailure))
-        {
-            return
-                results
-                    .SelectMany(r => r.Errors)
-                    .Where(e => e.DomainError != DomainError.None)
-                    .Distinct()
-                    .ToArray();
-        }
-        return results[0];
-    }
 }

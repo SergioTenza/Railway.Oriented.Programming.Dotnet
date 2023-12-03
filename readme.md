@@ -57,7 +57,7 @@ public bool IsAmountValid() => amount >= 0;
 
 - A function that returns a Result Type
   - INPUT
-    ===============>     SUCCESS     
+    ===============>     SUCCESS
     ===============>     FAILURE
 
 ```csharp
@@ -67,7 +67,157 @@ public Result<decimal> ValidateAmount(decimal amount) =>
         : [new Error { DomainError = DomainError.AccountValidationFailed }]
 ```
 
-<https://www.youtube.com/watch?v=45yk2nuRjj8> (17:09);
+### Dead end Function
+
+- A function wich doesn´t returns anything
+  - INPUT
+    ===============||
+
+```csharp
+AccountService.UpdateCard(request.CardCode, request.Amount);
+```
+
+### Supervisory
+
+- Supervise both tracks (Logging,Metrics)
+  - SUCCESS =============== SUCCESS
+  - FAILURE =============== FAILURE
+
+```csharp
+Logger.Error($"Card topped up for {request.CardHolder}");
+Logger.Info($"Card topped up for {request.CardHolder}");
+```
+
+### Switches
+
+- Constructors
+  - Create a new track
+- Adapters
+  - Convert one kind of track into another
+- Combiners
+  - Joining many tracks
+
+### Bind
+
+- Adapter block
+- Two track in, Two track out
+- Only executes on the success track
+  - SUCCESS =======//====== SUCCESS
+  - FAILURE ======//======= FAILURE
+
+```csharp
+public static class ResultExtensions
+{
+    public static Result<TOutData> Bind<TInData, TOutData>(
+    Result<TInData> input,
+    Func<Result<TInData>, Result<TOutData>> switchFunction) =>
+        input.IsSuccess 
+            ? switchFunction(input)
+            : input.Errors;
+
+}
+```
+
+### Map
+
+- Adapter block
+- One track in, Two track out
+- Only executes on the success track
+  - SUCCESS =============== SUCCESS
+  - FAILURE =============== FAILURE
+
+```csharp
+public static Result<TOutData> Map<TInData, TOutData>(
+    this.Result<TInData> input,
+    Func<TInData, TOutData> singleTrackFunction) =>
+        input.IsSuccess 
+            ? singleTrackFunction(input.Data)
+            : Result<TOutData>.Fail(input.Error);
+```
+
+### Double Map
+
+- Supervisory functions
+- Executes on both tracks
+  - SUCCESS =============== SUCCESS
+  - FAILURE =============== FAILURE
+
+```csharp
+public static Result<TOutData> DoubleMap<TInData, TOutData>(
+    this.Result<TInData> input,
+    Func<TInData, TOutData> successSingleTrackFunction,
+    Func<TInData, TOutData> failureSingleTrackFunction)
+    {
+        if(input.IsSuccess)
+        {
+            return successSingleTrackFunction
+        }
+        input.IsSuccess 
+            ? singleTrackFunction(input.Data)
+            : Result<TOutData>.Fail(input.Error);
+    }
+        
+```
+
+### Tee
+
+- Adapter block
+- Takes a dead end function
+- Turns it into a one track
+  - SUCCESS =============== SUCCESS
+  - ==============================|
+
+```csharp
+public static Result<TData> Tee<TData>(
+    this Result<TData> input, 
+    Action<TData> deadEndFunction)
+    {
+    if(input.IsSuccess)
+        deadEndFunction(input.Data);
+    return input;
+    }        
+```
+
+### Succeed
+
+- Constructor
+- Always on the success track
+- One track into Two tracks
+  - INPUT   =============== SUCCESS
+  - =============//======== FAILURE
+
+```csharp
+public static Result<TOutData> Succeed<TInData, TOutData>(
+    this Result<TInData> input,
+    Func<TInData, TOutData> singleTrackFunction) => 
+        singleTrackFunction(input.Data);
+```
+
+### Fail
+
+- Constructor
+- Always on the failure track
+- One track into Two tracks
+  - INPUT   =============== SUCCESS
+  - =============//======== FAILURE
+
+```csharp
+public static Result<TOutData> Fail<TInData, TOutData>(
+        this Result<TInData> input,
+        Func<TInData, TOutData> singleTrackFunction)
+    {
+        singleTrackFunction(input.Data);
+        return new List<Error>
+                {
+                    new Error
+                    {
+                        DomainError = DomainError.Fail
+                    }
+                }.ToArray();
+    }        
+```
+
+<https://www.youtube.com/watch?v=45yk2nuRjj8> (24:00);
 
 ### Result -> Match -> Only way to access value
 

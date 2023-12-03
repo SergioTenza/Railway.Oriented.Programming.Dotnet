@@ -1,4 +1,5 @@
 ﻿using Rop.Result.Object;
+using Rop.Result.Object.Extensions;
 
 namespace Rop.Tests.Unit;
 
@@ -78,29 +79,153 @@ public class ResultTestsUnit
         Assert.True(result.IsSuccess);
         Assert.False(result.IsFailure);
         Assert.Empty(result.Errors);
-         Assert.IsType<Error[]>(result.Errors);
+        Assert.IsType<Error[]>(result.Errors);
     }
     [Fact]
-    public void ShoulBeOfGivenTypeOnNonNullValueMatch()
+    public void ShoulBeOfGivenTypeOnNonNullValueOnSuccess()
     {
         //given
-        Order order = new Order();
-        Error[] errors = [];
+        Order orderBinding = new Order();
+        var expectedOrder = orderBinding;
 
         //when 
-        Result<Order> result = order;
-        var matched = result.Match<bool>(
-            success => GetOrder(order),
-            failure => GetOrderFault(errors)
-        );
+        Result<Order> binding = orderBinding;
+        var bind = binding
+                    .OnSuccess<Order, Order>(o => GetBindingOrder(o));
 
         //then
-        Assert.True(result.IsSuccess);
-        Assert.False(result.IsFailure);
-        Assert.Empty(result.Errors);
-        Assert.IsType<bool>(matched);
-        Assert.True(matched);
+        Assert.True(bind.IsSuccess);
+        Assert.False(bind.IsFailure);
+        Assert.Empty(bind.Errors);
+        Assert.IsType<Order>(bind.Data);
+        Assert.Equal(bind.Data, expectedOrder);
     }
+
+    [Fact]
+    public void ShoulBeFailureOnNullValueOnSuccess()
+    {
+        //given
+        Order orderBinding = default;
+        var expectedDomainError = DomainError.NullValue;
+
+        //when 
+        Result<Order> binding = orderBinding;
+        var bind = binding
+                    .OnSuccess<Order, Order>(o => GetBindingOrder(o));
+
+        //then
+        Assert.False(bind.IsSuccess);
+        Assert.True(bind.IsFailure);
+        Assert.NotEmpty(bind.Errors);
+        Assert.IsType<Error[]>(bind.Errors);
+        Assert.True(bind.Errors.Length == 1);
+        Assert.Equal(bind.Errors[0].DomainError, expectedDomainError);
+    }
+
+    [Fact]
+    public void ShoulBeOfGivenTypeOnNonNullValueOnMap()
+    {
+        //given
+        Order orderMap = new Order();
+        var expectedOrder = orderMap;
+
+        //when 
+        Result<Order> mapping = orderMap;
+        var bind = mapping
+                    .Map<Order, Order>(o => GetBindingOrderMap(o));
+
+        //then
+        Assert.True(bind.IsSuccess);
+        Assert.False(bind.IsFailure);
+        Assert.Empty(bind.Errors);
+        Assert.IsType<Order>(bind.Data);
+        Assert.Equal(bind.Data, expectedOrder);
+    }
+    [Fact]
+    public void ShoulBeFailureOnNullValueOnMap()
+    {
+        //given
+        Order orderMap = default;
+        var expectedDomainError = DomainError.NullValue;
+
+        //when 
+        Result<Order> mapping = orderMap;
+        var bind = mapping
+                    .Map<Order, Order>(o => GetBindingOrderMap(o));
+
+        //then
+        Assert.False(bind.IsSuccess);
+        Assert.True(bind.IsFailure);
+        Assert.NotEmpty(bind.Errors);
+        Assert.IsType<Error[]>(bind.Errors);
+        Assert.True(bind.Errors.Length == 1);
+        Assert.Equal(bind.Errors[0].DomainError, expectedDomainError);
+    }
+    [Fact]
+    public void ShoulBeOfGivenTypeOnNonNullValueOnDoubleMap()
+    {
+        //given
+        Order orderMap = new Order();
+        var expectedOrder = orderMap;
+
+        //when 
+        Result<Order> mapping = orderMap;
+        var bind = mapping
+                    .DoubleMap<Order, Order>(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
+
+        //then
+        Assert.True(bind.IsSuccess);
+        Assert.False(bind.IsFailure);
+        Assert.Empty(bind.Errors);
+        Assert.IsType<Order>(bind.Data);
+        Assert.Equal(bind.Data, expectedOrder);
+    }
+    [Fact]
+    public void ShoulBeFailureOnNullValueOnDoubleMap()
+    {
+        //given
+        Order orderMap = default;
+        var expectedDomainError = DomainError.NullValue;
+
+        //when 
+        Result<Order> mapping = orderMap;
+        var bind = mapping
+                    .DoubleMap<Order, Order>(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
+
+        //then
+        Assert.False(bind.IsSuccess);
+        Assert.True(bind.IsFailure);
+        Assert.NotEmpty(bind.Errors);
+        Assert.IsType<Error[]>(bind.Errors);
+        Assert.True(bind.Errors.Length == 1);
+        Assert.Equal(bind.Errors[0].DomainError, expectedDomainError);
+    }
+
+     [Fact]
+    public void ShoulBeOfGivenTypeOnNonNullValueOnTee()
+    {
+        //given
+        Order orderMap = new Order();
+        var expectedOrder = orderMap;
+
+        //when 
+        Result<Order> tee = orderMap;
+        var bind = tee
+                    .Tee<Order>(t => OrderAction(t));
+
+        //then
+        Assert.True(bind.IsSuccess);
+        Assert.False(bind.IsFailure);
+        Assert.Empty(bind.Errors);
+        Assert.IsType<Order>(bind.Data);
+        Assert.Equal(bind.Data, expectedOrder);    
+    }
+    private static Action<Order> OrderAction = (order) => 
+    {
+
+    }; 
+    private static Func<Order, Order> GetBindingOrderMap = (input) => input;
+    private static Func<Order, Result<Order>> GetBindingOrder = (input) => input;
     private static Func<Order, bool> GetOrder = (order) => true;
     private static Func<Order, bool> GetOrderFalse = (order) => false;
     private static Func<Error[], bool> GetOrderFault = (order) => false;
