@@ -1,0 +1,15 @@
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\bin\Debug\net8.0\Rop.Masstransit.Cqrs.deps.json
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\bin\Debug\net8.0\Rop.Masstransit.Cqrs.dll
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\bin\Debug\net8.0\Rop.Masstransit.Cqrs.pdb
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\bin\Debug\net8.0\Rop.Result.Object.dll
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\bin\Debug\net8.0\Rop.Result.Object.pdb
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.csproj.AssemblyReference.cache
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.AssemblyInfoInputs.cache
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.AssemblyInfo.cs
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.csproj.CoreCompileInputs.cache
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.csproj.CopyComplete
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.dll
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\refint\Rop.Masstransit.Cqrs.dll
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\Rop.Masstransit.Cqrs.pdb
+C:\projects\Rop.Result.Object\Rop.Masstransit.Cqrs\obj\Debug\net8.0\ref\Rop.Masstransit.Cqrs.dll
