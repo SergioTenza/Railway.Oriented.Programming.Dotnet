@@ -43,6 +43,32 @@ public class Result<T>
 }
 ```
 
+### Single Track Function
+
+- A function that returns a Value  
+  - INPUT
+    =============== OUTPUT
+
+```csharp
+public bool IsAmountValid() => amount >= 0;
+```
+
+### Two Track Function
+
+- A function that returns a Result Type
+  - INPUT
+    ===============>     SUCCESS     
+    ===============>     FAILURE
+
+```csharp
+public Result<decimal> ValidateAmount(decimal amount) =>
+    amount >= 0 
+        ? amount
+        : [new Error { DomainError = DomainError.AccountValidationFailed }]
+```
+
+<https://www.youtube.com/watch?v=45yk2nuRjj8> (17:09);
+
 ### Result -> Match -> Only way to access value
 
 ```csharp

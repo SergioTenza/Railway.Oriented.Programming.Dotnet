@@ -38,9 +38,9 @@ public class Result<T>
 
     public static implicit operator Result<T>(Error[] errors) => new(errors);
 
-    public TResult Match<TResult>(
+    public Result<TResult> Match<TResult>(
         Func<T, TResult> success,
-        Func<Error[], TResult> failure) =>
+        Func<T, TResult> failure) =>
         !IsFailure ? success(_content!) : failure(Errors!);
     public static Result<TValue> Combine<TValue>(params Result<TValue>[] results)
     {
