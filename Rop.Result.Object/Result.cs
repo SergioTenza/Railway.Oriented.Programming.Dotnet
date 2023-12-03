@@ -9,7 +9,7 @@ public class Result<T>
 
     private Result(T value)
     {
-        if(value is null)        
+        if(value is not null)        
         {
             IsSuccess = true;
             Errors = [];
@@ -42,10 +42,10 @@ public class Result<T>
         Func<T,TResult> success,
         Func<Error[],TResult> failure) =>
         !IsFailure ? success(_content!) : failure(Errors!);
-    public TResult Match<TResult>(
-        Func<T,TResult> success,
-        Func<Error,TResult> failure) =>
-        !IsFailure ? success(_content!) : failure(Errors.First()!);            
+    // public TResult Match<TResult>(
+    //     Func<T,TResult> success,
+    //     Func<Error,TResult> failure) =>
+    //     !IsFailure ? success(_content!) : failure(Errors.First()!);            
     public static Result<TValue> Combine<TValue>(params Result<TValue>[] results)
     {
         if(results.Any(r => r.IsFailure))
