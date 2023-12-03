@@ -9,7 +9,7 @@ public class ResultTestsUnit
     {
         //given
         Order order = null;
-        var expectedError = Error.NullValue;
+        var expectedError = new Error { DomainError = DomainError.NullValue };
 
         //when 
         Result<Order> result = order;
@@ -26,8 +26,8 @@ public class ResultTestsUnit
     public void ShoulBeFalseOnErrorValue()
     {
         //given
-        Error error = Error.NullValue;
-        var expectedError = Error.NullValue;
+        Error error = new Error { DomainError = DomainError.NullValue };
+        var expectedError = DomainError.NullValue;
 
         //when 
         Result<Order> result = error;
@@ -37,17 +37,18 @@ public class ResultTestsUnit
         Assert.True(result.IsFailure);
         Assert.NotEmpty(result.Errors);
         Assert.True(result.Errors.Length == 1);
-        Assert.Equal(expectedError, result.Errors[0]);
+        Assert.IsType<Error>(result.Errors[0]);
+        Assert.Equal(expectedError, result.Errors[0].DomainError);
     }
 
     [Fact]
     public void ShoulBeFalseOnErrorsValues()
     {
         //given
-        Error errorFirst = Error.NullValue;
-        Error errorSecond = Error.NullValue;
+        Error errorFirst = new Error { DomainError = DomainError.NullValue };
+        Error errorSecond = new Error { DomainError = DomainError.NullValue };
         Error[] errors = [errorFirst, errorSecond];
-        var expectedError = Error.NullValue;
+        var expectedError = DomainError.NullValue;
 
         //when 
         Result<Order> result = errors;
@@ -57,8 +58,11 @@ public class ResultTestsUnit
         Assert.True(result.IsFailure);
         Assert.NotEmpty(result.Errors);
         Assert.True(result.Errors.Length == 2);
-        Assert.Equal(expectedError, result.Errors[0]);
-        Assert.Equal(expectedError, result.Errors[1]);
+        Assert.IsType<Error[]>(result.Errors);
+        Assert.IsType<Error>(result.Errors[0]);
+        Assert.IsType<Error>(result.Errors[1]);
+        Assert.Equal(expectedError, result.Errors[0].DomainError);
+        Assert.Equal(expectedError, result.Errors[1].DomainError);
     }
 
     [Fact]
@@ -74,6 +78,7 @@ public class ResultTestsUnit
         Assert.True(result.IsSuccess);
         Assert.False(result.IsFailure);
         Assert.Empty(result.Errors);
+         Assert.IsType<Error[]>(result.Errors);
     }
     [Fact]
     public void ShoulBeOfGivenTypeOnNonNullValueMatch()
@@ -96,8 +101,8 @@ public class ResultTestsUnit
         Assert.IsType<bool>(matched);
         Assert.True(matched);
     }
-    private static Func<Order,bool> GetOrder = (order) => true;
-    private static Func<Order,bool> GetOrderFalse = (order) => false;
-    private static Func<Error[],bool> GetOrderFault= (order) => false;
+    private static Func<Order, bool> GetOrder = (order) => true;
+    private static Func<Order, bool> GetOrderFalse = (order) => false;
+    private static Func<Error[], bool> GetOrderFault = (order) => false;
 
 }

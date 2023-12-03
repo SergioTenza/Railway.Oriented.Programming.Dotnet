@@ -9,16 +9,16 @@ public class Result<T>
 
     private Result(T value)
     {
-        if(value is not null)        
+        if (value is not null)
         {
             IsSuccess = true;
             Errors = [];
-            _content = value;    
+            _content = value;
         }
         else
         {
             IsSuccess = false;
-            Errors = [Error.NullValue];
+            Errors = [new Error { DomainError = DomainError.NullValue }];
         }
     }
     private Result(Error error)
@@ -35,25 +35,21 @@ public class Result<T>
     public static implicit operator Result<T>(T value) => new(value);
 
     public static implicit operator Result<T>(Error error) => new(error);
-    
+
     public static implicit operator Result<T>(Error[] errors) => new(errors);
 
     public TResult Match<TResult>(
-        Func<T,TResult> success,
-        Func<Error[],TResult> failure) =>
+        Func<T, TResult> success,
+        Func<Error[], TResult> failure) =>
         !IsFailure ? success(_content!) : failure(Errors!);
-    // public TResult Match<TResult>(
-    //     Func<T,TResult> success,
-    //     Func<Error,TResult> failure) =>
-    //     !IsFailure ? success(_content!) : failure(Errors.First()!);            
     public static Result<TValue> Combine<TValue>(params Result<TValue>[] results)
     {
-        if(results.Any(r => r.IsFailure))
+        if (results.Any(r => r.IsFailure))
         {
-            return 
+            return
                 results
-                    .SelectMany(r=> r.Errors)
-                    .Where(e=> e != Error.None)
+                    .SelectMany(r => r.Errors)
+                    .Where(e => e.DomainError != DomainError.None)
                     .Distinct()
                     .ToArray();
         }
