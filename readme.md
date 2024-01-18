@@ -1,4 +1,4 @@
-# Railway Oriente Programming with dotnet - chsarp - Masstransit
+# Railway Oriented Programming with dotnet - chsarp - Masstransit
 
 ## Result implementation
 
