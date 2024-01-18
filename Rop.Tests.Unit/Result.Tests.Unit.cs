@@ -9,7 +9,7 @@ public class ResultTestsUnit
     public void ShoulBeFalseOnNullValue()
     {
         //given
-        Order order = null;
+        Order? order = null;
         var expectedError = new Error { DomainError = DomainError.NullValue };
 
         //when 
@@ -91,7 +91,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> binding = orderBinding;
         var bind = binding
-                    .OnSuccess<Order, Order>(o => GetBindingOrder(o));
+                    .OnSuccess(o => GetBindingOrder(o));
 
         //then
         Assert.True(bind.IsSuccess);
@@ -105,13 +105,13 @@ public class ResultTestsUnit
     public void ShoulBeFailureOnNullValueOnSuccess()
     {
         //given
-        Order orderBinding = default;
+        Order? orderBinding = default;
         var expectedDomainError = DomainError.NullValue;
 
         //when 
         Result<Order> binding = orderBinding;
         var bind = binding
-                    .OnSuccess<Order, Order>(o => GetBindingOrder(o));
+                    .OnSuccess(o => GetBindingOrder(o));
 
         //then
         Assert.False(bind.IsSuccess);
@@ -132,7 +132,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> mapping = orderMap;
         var bind = mapping
-                    .Map<Order, Order>(o => GetBindingOrderMap(o));
+                    .Map(o => GetBindingOrderMap(o));
 
         //then
         Assert.True(bind.IsSuccess);
@@ -145,13 +145,13 @@ public class ResultTestsUnit
     public void ShoulBeFailureOnNullValueOnMap()
     {
         //given
-        Order orderMap = default;
+        Order? orderMap = default;
         var expectedDomainError = DomainError.NullValue;
 
         //when 
         Result<Order> mapping = orderMap;
         var bind = mapping
-                    .Map<Order, Order>(o => GetBindingOrderMap(o));
+                    .Map(o => GetBindingOrderMap(o));
 
         //then
         Assert.False(bind.IsSuccess);
@@ -171,7 +171,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> mapping = orderMap;
         var bind = mapping
-                    .DoubleMap<Order, Order>(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
+                    .DoubleMap(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
 
         //then
         Assert.True(bind.IsSuccess);
@@ -184,13 +184,13 @@ public class ResultTestsUnit
     public void ShoulBeFailureOnNullValueOnDoubleMap()
     {
         //given
-        Order orderMap = default;
+        Order? orderMap = default;
         var expectedDomainError = DomainError.NullValue;
 
         //when 
         Result<Order> mapping = orderMap;
         var bind = mapping
-                    .DoubleMap<Order, Order>(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
+                    .DoubleMap(s => GetBindingOrderMap(s),f => GetBindingOrderMap(f));
 
         //then
         Assert.False(bind.IsSuccess);
@@ -211,7 +211,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> tee = orderMap;
         var bind = tee
-                    .Tee<Order>(t => OrderAction(t));
+                    .Tee(t => OrderAction(t));
 
         //then
         Assert.True(bind.IsSuccess);
