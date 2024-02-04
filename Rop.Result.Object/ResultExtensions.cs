@@ -80,11 +80,9 @@ public static class ResultExtensions
     {
         if(result.IsSuccess)
             return TypedResults.Ok(result.Data);
-        return result.IsSuccess switch
-        {
-            false => TypedResults.Problem(string.Concat(result.Errors.Select(e => e.Message),";")),            
-            _ => TypedResults.StatusCode(500)
-        };
+
+        var message = string.Join(';',result.Errors.Select(e => e.Message));
+        return TypedResults.Problem(message);
     }
     public static Result<TOutData> TryCatchSwitch<TInData,TOutData>(this Result<TInData> input,Func<TInData,TOutData> singleTrackFunction)
     {
