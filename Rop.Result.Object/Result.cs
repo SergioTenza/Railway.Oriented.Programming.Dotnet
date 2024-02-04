@@ -1,6 +1,6 @@
 ﻿namespace Rop.Result.Object;
 
-public class Result<T>
+public sealed class Result<T>
 {
     private T? _content;
     public T Data => _content;
@@ -32,6 +32,11 @@ public class Result<T>
         IsSuccess = false;
         Errors = [.. errors];
     }
+
+    public static Result<T> Success(T data) => new Result<T>(data);
+    public static Result<T> Failed(Error error) => new Result<T>(error);
+    public static Result<T> Failed(IEnumerable<Error> errors) => new Result<T>(errors.ToArray());
+
 
     public static implicit operator Result<T>(T value) => new(value);
 

@@ -91,7 +91,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> binding = orderBinding;
         var bind = binding
-                    .OnSuccess(o => GetBindingOrder(o));
+                    .Bind(o => GetBindingOrder(o));
 
         //then
         Assert.True(bind.IsSuccess);
@@ -111,7 +111,7 @@ public class ResultTestsUnit
         //when 
         Result<Order> binding = orderBinding;
         var bind = binding
-                    .OnSuccess(o => GetBindingOrder(o));
+                    .Bind(o => GetBindingOrder(o));
 
         //then
         Assert.False(bind.IsSuccess);

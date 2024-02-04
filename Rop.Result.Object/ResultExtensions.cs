@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Rop.Result.Object.Extensions;
 
 public static class ResultExtensions
 {
-    public static Result<TOutData> OnSuccess<TInData, TOutData>(
+    public static Result<TOutData> Bind<TInData, TOutData>(
     this Result<TInData> input,
     Func<TInData, Result<TOutData>> switchFunction) =>
         input.IsSuccess
@@ -62,5 +64,56 @@ public static class ResultExtensions
             return applyFunction(input.Data,input2.Data);
         }
         return input.Errors;
+    }
+     public static Result<TData> Apply<TData,TInput>(
+        this Result<TData> input,
+        TInput input2,
+        Func<Result<TData>,TInput,Result<TData>> applyFunction)
+    {
+        if (input.IsSuccess)
+        {
+            return applyFunction(input.Data,input2);
+        }
+        return input.Errors;
+    }
+    public static IResult Handle<TData>(this Result<TData> result)
+    {
+        if(result.IsSuccess)
+            return TypedResults.Ok(result.Data);
+        return result.IsSuccess switch
+        {
+            false => TypedResults.Problem(string.Concat(result.Errors.Select(e => e.Message),";")),            
+            _ => TypedResults.StatusCode(500)
+        };
+    }
+    public static Result<TOutData> TryCatchSwitch<TInData,TOutData>(this Result<TInData> input,Func<TInData,TOutData> singleTrackFunction)
+    {
+        try
+        {
+            return input.IsSuccess            
+            ? Result<TOutData>.Success(singleTrackFunction(input.Data))
+            : Result<TOutData>.Failed(input.Errors);
+        }
+        catch(Exception ex)
+        {
+            return Result<TOutData>.Failed(new Error
+            {
+                Message = ex.Message,
+                Code = "500",
+                DomainError = DomainError.UnhandledException
+
+            });
+        };
+    }
+    public static Result<bool> BooleanSwitch<TInData>(this Result<TInData> input,Func<TInData,bool> singleTrackFunction)
+    {                   
+        if(input.IsSuccess)
+            return singleTrackFunction(input.Data)
+                ? Result<bool>.Success(true)
+                : Result<bool>.Failed(new Error
+                {
+                    DomainError = DomainError.BooleanSwitchFailed
+                });
+        return Result<bool>.Failed(input.Errors);
     }
 }

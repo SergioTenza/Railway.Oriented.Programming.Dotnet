@@ -6,6 +6,7 @@ internal static class CarBuilder
 {
     internal static Result<Car> CreateCar() => new Car();
 
+    
     internal static Result<Car> AddEngine(Result<Car> car,Result<Engine> engine)
     {
         if(car.IsSuccess && engine.IsSuccess)        
@@ -23,6 +24,15 @@ internal static class CarBuilder
             errors.AddRange(engine.Errors);
         } 
         return errors.ToArray();
+    }
+     internal static Result<Car> AddEngine(Result<Car> car,Engine engine)
+    {
+        if(car.IsSuccess)        
+        {
+            var response =  car.Data with {Engine = engine };
+            return response;
+        } 
+        return car.Errors;
     }
 
     internal static Result<Car> AddModel(Result<Car> car,Result<Model> model)
@@ -43,6 +53,15 @@ internal static class CarBuilder
         } 
         return errors.ToArray();
     }
+    internal static Result<Car> AddModel(Result<Car> car,Model model)
+    {
+        if(car.IsSuccess)        
+        {
+            var response =  car.Data with {Model = model };
+            return response;
+        } 
+        return car.Errors;
+    }
 
     internal static Result<Car> AddWheels(Result<Car> car,Result<Wheels> wheels)
     {
@@ -61,5 +80,15 @@ internal static class CarBuilder
             errors.AddRange(wheels.Errors);
         } 
         return errors.ToArray();
+    }
+
+     internal static Result<Car> AddWheels(Result<Car> car,Wheels wheels)
+    {
+        if(car.IsSuccess)        
+        {
+            var response =  car.Data with {Wheels = wheels };
+            return response;
+        } 
+        return car.Errors;
     }
 }

@@ -4,5 +4,7 @@ public enum DomainError
 {
     None,
     NullValue,
-    Fail
+    Fail,
+    UnhandledException,
+    BooleanSwitchFailed
 }
