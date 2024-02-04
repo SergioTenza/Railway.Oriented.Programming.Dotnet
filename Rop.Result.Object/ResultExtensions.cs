@@ -76,13 +76,14 @@ public static class ResultExtensions
         }
         return input.Errors;
     }
-    public static IResult Handle<TData>(this Result<TData> result)
-    {
+    public static async Task<IResult> HandleAsync<TData>(this Result<TData> result)
+    {        
         if(result.IsSuccess)
             return TypedResults.Ok(result.Data);
 
         var message = string.Join(';',result.Errors.Select(e => e.Message));
         return TypedResults.Problem(message);
+        
     }
     public static Result<TOutData> TryCatchSwitch<TInData,TOutData>(this Result<TInData> input,Func<TInData,TOutData> singleTrackFunction)
     {
