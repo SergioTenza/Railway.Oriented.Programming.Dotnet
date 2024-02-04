@@ -11,5 +11,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rop.Result.Object\Rop.Result.Object.csproj" />
-  </ItemGroup>
+  </ItemGroup>  
 </Project>

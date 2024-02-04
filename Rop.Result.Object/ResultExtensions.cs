@@ -51,4 +51,16 @@ public static class ResultExtensions
                     }
                 }.ToArray();
     }
+
+    public static Result<TData> Apply<TData,TInput>(
+        this Result<TData> input,
+        Func<Result<TData>,Result<TInput>,TData> applyFunction)
+    {
+        System.Console.WriteLine("Enters Apply");
+        if (input.IsSuccess)
+        {
+            return applyFunction(input.Data);
+        }
+        return input.Errors;
+    }
 }
