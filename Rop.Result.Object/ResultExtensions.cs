@@ -99,7 +99,7 @@ public static class ResultExtensions
             return Result<TOutData>.Failed(new Error
             {
                 Message = ex.Message,
-                Code = "500",
+                Code = "3",
                 DomainError = DomainError.UnhandledException
 
             });

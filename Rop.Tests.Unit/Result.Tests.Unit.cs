@@ -6,6 +6,86 @@ namespace Rop.Tests.Unit;
 public class ResultTestsUnit
 {
     [Fact]
+    public void ShouldBeErrorResultOnBadTryCatchSwitch()
+    {
+        //given
+        var expectedMessage = "Not implemented";
+        var expectedDomainError = DomainError.UnhandledException;
+        var expectedErrorCode = "3";
+        Result<bool> createResult = true;
+        Func<Result<bool>,Result<bool>> action = (func)=>
+        {
+            throw new NotImplementedException(expectedMessage);
+        };
+
+        
+        //when 
+        var result = createResult.TryCatchSwitch(_ => action(_));
+
+        //then
+        Assert.False(result.IsSuccess);
+        Assert.Equal(expectedMessage,result.Errors.First().Message);
+        Assert.Equal(expectedErrorCode,result.Errors.First().Code);
+        Assert.Equal(expectedDomainError,result.Errors.First().DomainError);
+    }
+
+    [Fact]
+    public void ShouldBeSuccessResultOnTryCatchSwitch()
+    {
+        //given
+        Result<bool> createResult = true;
+        Func<Result<bool>,Result<bool>> action = (func)=>
+        {
+            return true;
+        };
+
+        
+        //when 
+        var result = createResult.TryCatchSwitch(_ => action(_));
+
+        //then
+        Assert.True(result.IsSuccess);
+    }
+
+     [Fact]
+    public void ShouldBeErrorResultOnFalseBooleanSwitch()
+    {
+        //given        
+        var expectedDomainError = DomainError.BooleanSwitchFailed;        
+        Result<bool> createResult = true;
+        Func<Result<bool>,bool> action = (func)=>
+        {
+            return false;
+        };
+
+        
+        //when 
+        var result = createResult.BooleanSwitch(_ => action(_));
+
+        //then
+        Assert.False(result.IsSuccess);        
+        Assert.Equal(expectedDomainError,result.Errors.First().DomainError);
+    }
+
+    [Fact]
+    public void ShouldBeSuccessResultOnTrueBooleanSwitch()
+    {
+        //given
+        Result<bool> createResult = true;
+        Func<Result<bool>,bool> action = (func)=>
+        {
+            return true;
+        };
+
+        
+        //when 
+        var result = createResult.BooleanSwitch(_ => action(_));
+
+        //then
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
     public void ShoulBeFalseOnNullValue()
     {
         //given
