@@ -54,12 +54,12 @@ public static class ResultExtensions
 
     public static Result<TData> Apply<TData,TInput>(
         this Result<TData> input,
-        Func<Result<TData>,Result<TInput>,TData> applyFunction)
+        Result<TInput> input2,
+        Func<Result<TData>,Result<TInput>,Result<TData>> applyFunction)
     {
-        System.Console.WriteLine("Enters Apply");
         if (input.IsSuccess)
         {
-            return applyFunction(input.Data);
+            return applyFunction(input.Data,input2.Data);
         }
         return input.Errors;
     }

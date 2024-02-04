@@ -6,27 +6,60 @@ internal static class CarBuilder
 {
     internal static Result<Car> CreateCar() => new Car();
 
-    internal static Result<Car> AddEngine(this Result<Car> car,Func<Result<Engine>> engine)
+    internal static Result<Car> AddEngine(Result<Car> car,Result<Engine> engine)
     {
-        System.Console.WriteLine("Enters AddEngine");
-        var createdEngine = engine();        
-        if(createdEngine.IsSuccess)        
+        if(car.IsSuccess && engine.IsSuccess)        
         {
-            var response =  car.Data with {Engine = createdEngine.Data };
-            System.Console.WriteLine(response);
-            System.Console.WriteLine("Exits AddEngine");
+            var response =  car.Data with {Engine = engine.Data };
             return response;
-        }  
-        System.Console.WriteLine("Exits Errored AddEngine");
-        return createdEngine.Errors;
+        } 
+        List<Error> errors = [];
+        if(car.IsFailure)
+        {
+            errors.AddRange(car.Errors);
+        } 
+        if(engine.IsFailure)
+        {
+            errors.AddRange(engine.Errors);
+        } 
+        return errors.ToArray();
     }
-    internal static Func<Result<Car>,Model,Result<Car>> AddModel = (car,model) => 
-        car.IsSuccess 
-            ? car.Data with {Model = model }
-            : car.Errors;
-    internal static Func<Result<Car>,Wheels,Result<Car>> AddWheels = (car,wheels) =>
-        car.IsSuccess 
-            ? car.Data with {Wheels = wheels }
-            : car.Errors; 
 
+    internal static Result<Car> AddModel(Result<Car> car,Result<Model> model)
+    {
+        if(car.IsSuccess && model.IsSuccess)        
+        {
+            var response =  car.Data with {Model = model.Data };
+            return response;
+        } 
+        List<Error> errors = [];
+        if(car.IsFailure)
+        {
+            errors.AddRange(car.Errors);
+        } 
+        if(model.IsFailure)
+        {
+            errors.AddRange(model.Errors);
+        } 
+        return errors.ToArray();
+    }
+
+    internal static Result<Car> AddWheels(Result<Car> car,Result<Wheels> wheels)
+    {
+        if(car.IsSuccess && wheels.IsSuccess)        
+        {
+            var response =  car.Data with {Wheels = wheels.Data };
+            return response;
+        } 
+        List<Error> errors = [];
+        if(car.IsFailure)
+        {
+            errors.AddRange(car.Errors);
+        } 
+        if(wheels.IsFailure)
+        {
+            errors.AddRange(wheels.Errors);
+        } 
+        return errors.ToArray();
+    }
 }
