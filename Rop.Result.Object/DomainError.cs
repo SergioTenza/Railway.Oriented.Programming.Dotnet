@@ -6,5 +6,6 @@ public enum DomainError
     NullValue,
     Fail,
     UnhandledException,
-    BooleanSwitchFailed
+    BooleanSwitchFailed,
+    RedisServerError
 }
