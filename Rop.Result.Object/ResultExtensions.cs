@@ -47,8 +47,7 @@ public static class ResultExtensions
         singleTrackFunction(input.Data);
         return new List<Error>
                 {
-                    new Error
-                    {
+                    new() {
                         DomainError = DomainError.Fail
                     }
                 }.ToArray();
@@ -79,10 +78,10 @@ public static class ResultExtensions
     public static async Task<IResult> HandleAsync<TData>(this Result<TData> result)
     {        
         if(result.IsSuccess)
-            return TypedResults.Ok(result.Data);
+            return await Task.FromResult(TypedResults.Ok(result.Data));
 
-        var message = string.Join(';',result.Errors.Select(e => e.Message));
-        return TypedResults.Problem(message);
+        string message = string.Join(';',result.Errors.Select(e => e.Message));
+        return await Task.FromResult(TypedResults.Problem(message));
         
     }
     public static Result<TOutData> TryCatchSwitch<TInData,TOutData>(this Result<TInData> input,Func<TInData,TOutData> singleTrackFunction)

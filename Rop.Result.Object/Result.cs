@@ -2,8 +2,8 @@
 
 public sealed class Result<T>
 {
-    private T? _content;
-    public T Data => _content;
+    private readonly T? _content;
+    public T Data => _content!;
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
     public Error[] Errors { get; }
@@ -33,9 +33,9 @@ public sealed class Result<T>
         Errors = [.. errors];
     }
 
-    public static Result<T> Success(T data) => new Result<T>(data);
-    public static Result<T> Failed(Error error) => new Result<T>(error);
-    public static Result<T> Failed(IEnumerable<Error> errors) => new Result<T>(errors.ToArray());
+    public static Result<T> Success(T data) => new(data);
+    public static Result<T> Failed(Error error) => new(error);
+    public static Result<T> Failed(IEnumerable<Error> errors) => new(errors.ToArray());
 
 
     public static implicit operator Result<T>(T value) => new(value);
